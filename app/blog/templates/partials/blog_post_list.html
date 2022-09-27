@@ -1,0 +1,31 @@
+<div class="list-group w-auto d-flex gap-3">
+    {% for blog_post in blog_posts %}
+    <div class="list-group-item list-group-item-action" aria-current="true">
+        <h2>{{ blog_post.title }}</h2>
+        <div class="post-summary w-100 d-flex justify-content-between">
+            <p>
+                {{ blog_post.content|truncatechars:80 }}
+            </p>
+            {% if blog_post.image %}
+                <img src="{{ blog_post.image.url }}" class="img-thumbnail" width="120">
+            {% endif %}
+        </div>
+        <ul class="list">
+            {% if blog_post.category %}
+                <li>
+                    <a href="{% url 'blog-category' slug=blog_post.category.slug %}">Category: {{ blog_post.category }}</a>
+            </li>
+            {% endif %}
+            <li>
+                <a href="{% url 'blog-post' category_slug=blog_post.category.slug slug=blog_post.slug %}">Detail page</a>
+            </li>
+        </ul>
+    </div>
+      {% empty %}
+      <div class="list-group-item list-group-item-action" aria-current="true">
+        <small class="opacity-50 text-nowrap">
+            No blog posts found
+        </small>
+    </div>
+    {% endfor %}
+</div>

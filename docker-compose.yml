@@ -1,0 +1,30 @@
+version: '3'
+services:
+  python: &python
+    build:
+      context: .
+      dockerfile: docker/dev/python/Dockerfile
+    env_file:
+      - .env
+    environment:
+      - DATABASE_URL=postgres://$DATABASE_USER:$DATABASE_PASSWORD@$DATABASE_HOST/$DATABASE_NAME
+    user: ${CURRENT_USER}
+    volumes:
+      - ./docker-data/media:/media_files
+      - ./app:/app
+    ports:
+      - 8000:8000
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:14.5-alpine
+    env_file:
+      - .env
+    environment:
+      - POSTGRES_USER=$DATABASE_USER
+      - POSTGRES_DB=$DATABASE_NAME
+      - POSTGRES_PASSWORD=$DATABASE_PASSWORD
+    volumes:
+      - ./docker-data/postgresql:/var/lib/postgresql/data

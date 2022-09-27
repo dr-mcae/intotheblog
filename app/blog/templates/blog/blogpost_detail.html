@@ -1,0 +1,52 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="row mb-3">
+  <div class="col-12">
+    <h1>{{ blog_post.title }}</h1>
+    {% if blog_post.image %}
+    <img src="{{ blog_post.image.url }}" class="img-fluid">
+    {% endif %}
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <ul>
+        <li>
+            Author: {{ blog_post.author }}
+        </li>
+        <li>
+            Category: <a href="{% url 'blog-category' slug=blog_post.category.slug %}">{{ blog_post.category }}</a>
+        </li>
+        <li>
+            Post Date: {{ blog_post.post_date }}
+        </li>
+    </ul>
+    {{ blog_post.content|linebreaks }}
+  </div>
+</div>
+<div class="row">
+  <div class="col-12">
+    <h2>Comments</h2>
+    <ul>
+      {% for comment in blog_post.comments.visible %}
+        <li>
+            <ul>
+              <li><span>Name: {{ comment.name }}</span></li>
+              <li><span>Date: {{ comment.comment_date }}</span></li>
+              <li>
+                {{ comment.comment|linebreaks }}</li>
+            </ul>
+        </li>
+      {% endfor %}
+    </ul>
+
+    <h3>Leave a comment</h3>
+    <form method="post">
+      {% csrf_token %}
+      {{ form.as_p }}
+      <input type="submit" value="Leave comment">
+  </form>
+  </div>
+</div>
+{% endblock %}
